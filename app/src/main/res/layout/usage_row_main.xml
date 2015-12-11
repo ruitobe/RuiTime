@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout android:id="@+id/app_usage_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        >
+        <ImageView android:id="@+id/app_icon"
+
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            />
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PackageNameFont"
+                />
+
+            <LinearLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/textview_last_time_used_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/last_time_used"
+                    />
+
+                <TextView
+                    android:id="@+id/textview_last_time_used"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/textview_total_duration_used_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_duration_used"
+                    />
+
+                <TextView
+                    android:id="@+id/textview_total_duration_used"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/app_bar_ll"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_usage_ll"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout android:gravity="bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="15.0dp">
+
+            <ProgressBar
+                android:id="@+id/timeBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_height="10dp"
+                android:background="@android:color/transparent"
+                android:layout_alignParentLeft="true"
+                android:minHeight="20dp"
+                android:max="100"
+                android:progress="100" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View android:id="@+id/divider"
+        android:layout_below="@id/app_bar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bbbbbb"/>
+</LinearLayout>
