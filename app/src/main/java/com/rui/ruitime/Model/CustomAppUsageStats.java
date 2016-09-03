@@ -26,6 +26,9 @@ import android.graphics.drawable.Drawable;
 
 public class CustomAppUsageStats {
     public UsageStats usageStats;
-    public String appName;
     public Drawable appIcon;
+    public String appName;
+    public String lastUsedTimestampString;
+    public String totalUsedDurationString;
+
 }

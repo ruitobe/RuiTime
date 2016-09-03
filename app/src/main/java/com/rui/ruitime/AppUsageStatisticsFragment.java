@@ -34,6 +34,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,11 +46,20 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+
+import com.opencsv.CSVWriter;
 import com.rui.ruitime.Model.*;
 import com.rui.ruitime.adapters.*;
 
@@ -58,6 +70,10 @@ import com.rui.ruitime.adapters.*;
 public class AppUsageStatisticsFragment extends Fragment {
 
     private static final String TAG = AppUsageStatisticsFragment.class.getSimpleName();
+
+    List<CustomAppUsageStats> customUsageStatsList = new ArrayList<>();
+
+    //List<UsageStats> tempUsageStatsList = new ArrayList<UsageStats>();
 
     //VisibleForTesting for variables below
     UsageStatsManager mUsageStatsManager;
@@ -86,11 +102,72 @@ public class AppUsageStatisticsFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_saving) {
+            File dir = new File(android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/RuiTime");
+            dir.mkdirs();
+            String path = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/RuiTime";
+            StringBuilder fileName = new StringBuilder().append("RuiTime").append("AnalysisData").append(getDate()).append(".csv");
+            String filePath = path + File.separator + fileName.toString();
+            CSVWriter writer = null;
+            try {
+                writer = new CSVWriter(new FileWriter(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[] {new StringBuilder().append("Application Name").toString(),
+                                    new StringBuilder().append("Last Used Timestamp").toString(),
+                                    new StringBuilder().append("Total Used Duration").toString()});
+            for (int index = 0; index < customUsageStatsList.size(); index++) {
+
+                data.add(new String[] {new StringBuilder().append(customUsageStatsList.get(index).appName).toString(),
+                        new StringBuilder().append(customUsageStatsList.get(index).lastUsedTimestampString).toString(),
+                        new StringBuilder().append(customUsageStatsList.get(index).totalUsedDurationString).toString()});
+            }
+
+            writer.writeAll(data);
+
+            Toast.makeText(getActivity(),
+                    new StringBuilder().append(fileName).append(getString(R.string.notification_saved)).toString(),
+                    Toast.LENGTH_LONG).show();
+
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(),
+                        new StringBuilder().append(fileName).append(getString(R.string.notification_unsaved)).toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mUsageStatsManager = (UsageStatsManager) getActivity()
                 .getSystemService(Context.USAGE_STATS_SERVICE); //Context.USAGE_STATS_SERVICE
+        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -129,17 +206,14 @@ public class AppUsageStatisticsFragment extends Fragment {
                 if (statsUsageInterval != null) {
                     List<UsageStats> usageStatsList =
                             getUsageStatistics(statsUsageInterval.mInterval);
-                    //Collections.sort(usageStatsList, new LastTimeLaunchedComparatorDesc());
-                    if(criteriaStrs[itemPosOfSortSpinner].equals("Total duration"))
-                    {
-                        Collections.sort(usageStatsList, new TotalDurationUsedComparatorDesc());
-                        updateAppsList(usageStatsList);
-                    }
-                    else if(criteriaStrs[itemPosOfSortSpinner].equals("Alphabetical"))
-                    {
-                        // TODO: Implement it later
-                        System.out.println("Alphabetical");
-                        updateAppsList(usageStatsList);
+
+                    if (criteriaStrs[itemPosOfSortSpinner].equals("Total duration")) {
+
+                        updateAppsList(usageStatsList, 0);
+
+                    } else if (criteriaStrs[itemPosOfSortSpinner].equals("Alphabetical")) {
+
+                        updateAppsList(usageStatsList, 1);
                     }
 
                 }
@@ -158,7 +232,6 @@ public class AppUsageStatisticsFragment extends Fragment {
         mSortSpinner.setAdapter(SortSpinnerAdapter);
 
 
-
         mSortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -175,16 +248,13 @@ public class AppUsageStatisticsFragment extends Fragment {
 
                     List<UsageStats> usageStatsList = getUsageStatistics(statsUsageInterval.mInterval);
 
-                    if(criteriaStrs[position].equals("Total duration"))
-                    {
-                        Collections.sort(usageStatsList, new TotalDurationUsedComparatorDesc());
-                        updateAppsList(usageStatsList);
-                    }
-                    else if(criteriaStrs[position].equals("Alphabetical"))
-                    {
-                        // TODO: Implement it later
-                        System.out.println("Alphabetical");
-                        //updateAppsList(usageStatsList);
+                    if (criteriaStrs[position].equals("Total duration")) {
+
+                        //Collections.sort(usageStatsList, new TotalDurationUsedComparatorDesc());
+                        updateAppsList(usageStatsList, 0);
+                    } else if (criteriaStrs[position].equals("Alphabetical")) {
+
+                        updateAppsList(usageStatsList, 1);
                     }
 
                 }
@@ -196,6 +266,19 @@ public class AppUsageStatisticsFragment extends Fragment {
 
             }
         });
+
+    }
+
+    private String getDate() {
+        Calendar c = Calendar.getInstance();
+        DecimalFormat df = new DecimalFormat("00");
+        return new StringBuilder()
+                .append(df.format(c.get(Calendar.YEAR))).append("-")
+                .append(df.format(c.get(Calendar.MONTH) + 1)).append("-")
+                .append(df.format(c.get(Calendar.DATE))).append("-")
+                .append(df.format(c.get(Calendar.HOUR_OF_DAY))).append("-")
+                .append(df.format(c.get(Calendar.MINUTE))).append("-")
+                .append(df.format(c.get(Calendar.SECOND))).toString();
     }
 
     /**
@@ -241,8 +324,9 @@ public class AppUsageStatisticsFragment extends Fragment {
      *                       {@link #mRecyclerView}.
      */
     //VisibleForTesting
-    void updateAppsList(List<UsageStats> usageStatsList) {
-        List<CustomAppUsageStats> customUsageStatsList = new ArrayList<>();
+    void updateAppsList(List<UsageStats> usageStatsList, int modeOfSorting) {
+
+        customUsageStatsList.clear();
         PackageManager packageManager =  getActivity().getPackageManager();
 
         for (int i = 0; i < usageStatsList.size(); i++) {
@@ -271,7 +355,29 @@ public class AppUsageStatisticsFragment extends Fragment {
                         customUsageStats.usageStats.getPackageName()));
             }
             customUsageStats.appName = (String) (appInfo != null ? packageManager.getApplicationLabel(appInfo) : "Unknown");
+
+            int[] statsDuration = {0, 0, 0};
+            long lastTimeUsed = customUsageStats.usageStats.getLastTimeUsed();
+
+            DateFormat df = new SimpleDateFormat();
+            customUsageStats.lastUsedTimestampString = df.format(new Date(lastTimeUsed));
+
+            long totalDurationUsed = (long) (customUsageStats.usageStats.getTotalTimeInForeground() / 1000.0D);
+
+            statsDuration[0] = (int)(totalDurationUsed / 3600);
+            statsDuration[1] = (int)((totalDurationUsed - statsDuration[0] * 3600) / 60);
+            statsDuration[2] = (int)((totalDurationUsed - statsDuration[0] * 3600 - statsDuration[1] * 60));
+
+            customUsageStats.totalUsedDurationString = ((statsDuration[0] > 0) ? statsDuration[0] + "h " : "") + ((statsDuration[1] > 0) ? statsDuration[1] + "m " : "") + ((statsDuration[2] > 0) ? statsDuration[2] + "s " : "1s");
             customUsageStatsList.add(customUsageStats);
+
+        }
+
+        if (modeOfSorting == 0) {
+            Collections.sort(customUsageStatsList, new TotalDurationUsedComparatorDesc());
+        }
+        else if (modeOfSorting == 1) {
+            Collections.sort(customUsageStatsList, new AlphabeticalComparatorDesc());
         }
         mUsageListAdapter.setCustomUsageStatsList(customUsageStatsList);
         mUsageListAdapter.notifyDataSetChanged();
@@ -292,16 +398,30 @@ public class AppUsageStatisticsFragment extends Fragment {
     }
 
     /**
-     * The {@link Comparator} to sort a collection of {@link UsageStats} sorted by the total time spent
+     * The {@link Comparator} to sort a collection of {@link CustomAppUsageStats} sorted by the total time spent
      * the most time the app was used in the descendant order.
      */
 
-    private static class TotalDurationUsedComparatorDesc implements Comparator<UsageStats> {
+    private static class TotalDurationUsedComparatorDesc implements Comparator<CustomAppUsageStats> {
 
         @Override
-        public int compare(UsageStats left, UsageStats right) {
+        public int compare(CustomAppUsageStats left, CustomAppUsageStats right) {
 
-            return Long.compare(right.getTotalTimeInForeground(), left.getTotalTimeInForeground());
+            return Long.compare(right.usageStats.getTotalTimeInForeground(), left.usageStats.getTotalTimeInForeground());
+        }
+    }
+
+    /**
+     * The {@link Comparator} to sort a collection of {@link CustomAppUsageStats} sorted by the total time spent
+     * the most time the app was used in the descendant order.
+     */
+
+    private static class AlphabeticalComparatorDesc implements Comparator<CustomAppUsageStats> {
+
+        @Override
+        public int compare(CustomAppUsageStats left, CustomAppUsageStats right) {
+
+            return left.appName.compareToIgnoreCase(right.appName);
         }
     }
 

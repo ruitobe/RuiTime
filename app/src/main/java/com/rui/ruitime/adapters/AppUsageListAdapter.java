@@ -55,7 +55,7 @@ public class AppUsageListAdapter extends RecyclerView.Adapter<AppUsageListAdapte
 
 
     private List<CustomAppUsageStats> mCustomUsageStatsList = new ArrayList<>();
-    private DateFormat mDateFormat = new SimpleDateFormat();
+    //private DateFormat mDateFormat = new SimpleDateFormat();
 
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
@@ -126,12 +126,8 @@ public class AppUsageListAdapter extends RecyclerView.Adapter<AppUsageListAdapte
 
 
         int[] statsDuration = {0, 0, 0};
-        long lastTimeUsed = mCustomUsageStatsList.get(position).usageStats.getLastTimeUsed();
-        long totalDurationUsed = (long) (mCustomUsageStatsList.get(position).usageStats.getTotalTimeInForeground() / 1000.0D);
 
-        statsDuration[0] = (int)(totalDurationUsed / 3600);
-        statsDuration[1] = (int)((totalDurationUsed - statsDuration[0] * 3600) / 60);
-        statsDuration[2] = (int)((totalDurationUsed - statsDuration[0] * 3600 - statsDuration[1] * 60));
+        long totalDurationUsed = (long) (mCustomUsageStatsList.get(position).usageStats.getTotalTimeInForeground() / 1000.0D);
 
         float secondsRatio = (float) totalDurationUsed / 7200;
 
@@ -168,7 +164,7 @@ public class AppUsageListAdapter extends RecyclerView.Adapter<AppUsageListAdapte
 
         timeBarWidth = (int)(100 * secondsRatio);
 
-        viewHolder.getLastTimeUsed().setText(mDateFormat.format(new Date(lastTimeUsed)));
+        viewHolder.getLastTimeUsed().setText(mCustomUsageStatsList.get(position).lastUsedTimestampString);
         viewHolder.getAppIcon().setImageDrawable(mCustomUsageStatsList.get(position).appIcon);
 
         // Customize the time bar width and color,
@@ -179,9 +175,8 @@ public class AppUsageListAdapter extends RecyclerView.Adapter<AppUsageListAdapte
         bar.getProgressDrawable().setColorFilter(timeBarColor, PorterDuff.Mode.SRC_IN);
         bar.setScaleY(3F);
         bar.setProgress(timeBarWidth);
-        String totalDurationString = ((statsDuration[0] > 0) ? statsDuration[0] + "h " : "") + ((statsDuration[1] > 0) ? statsDuration[1] + "m " : "") + ((statsDuration[2] > 0) ? statsDuration[2] + "s " : "1s");
-        viewHolder.getTotalDurationUsed().setText(totalDurationString);
-        //viewHolder.getTimeBar().getLayoutParams().width = 360;
+        viewHolder.getTotalDurationUsed().setText(mCustomUsageStatsList.get(position).totalUsedDurationString);
+
     }
 
     @Override

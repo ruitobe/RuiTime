@@ -43,7 +43,7 @@ public class InstructionActivity extends AppCompatActivity
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 
@@ -74,8 +74,8 @@ public class InstructionActivity extends AppCompatActivity
             int layout = getResources().getIdentifier("instructions_page" + page, "layout", "com.rui.ruitime");
             View rootView = inflater.inflate(layout, container, false);
 
-            if(page == 3) {
-                Button btn3 = (Button)rootView.findViewById(com.rui.ruitime.R.id.btn3);
+            if(page == 2) {
+                Button btn3 = (Button)rootView.findViewById(com.rui.ruitime.R.id.btn2);
                 btn3.setOnClickListener(new View.OnClickListener() {
 
                     @Override

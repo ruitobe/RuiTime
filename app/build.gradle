@@ -25,4 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:+'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.android.support:design:23.1.1'
+    compile files('opencsv-3.6.jar')
+    compile files('ftp4j-1.7.2.jar')
 }

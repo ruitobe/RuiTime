@@ -23,6 +23,11 @@
     <string name="time_span">"Time span: "</string>
     <string name="sort">"Sort by: "</string>
 
+    <string name="action_saving">"Saving statistics"</string>
+
+    <string name="notification_saved">" is saved in the folder 'RuiTime'."</string>
+    <string name="notification_unsaved">" is not saved successfully."</string>
+
     <string name="explanation_access_to_appusage_is_not_enabled">Failed to retrieve app usage
         statistics. You may need to enable access
         for this app through Settings > Security > Apps with usage access

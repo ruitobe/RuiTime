@@ -8,7 +8,7 @@
     android:paddingLeft="10dp"
     android:paddingBottom="0dp"
     android:requiresFadingEdge="vertical"
-    tools:context="com.rui.ruitime.InstructionsPlaceholderFragment">
+    tools:context="ca.mimic.apphangar.Instructions$PlaceholderFragment">
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,7 +20,15 @@
             android:layout_height="wrap_content"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:text="@string/instructions_page2_1"/>
+            android:layout_marginBottom="15dp"
+            android:text="@string/instructions_page3_1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/instructions_page3_2"/>
 
         <ImageView
             tools:ignore="ContentDescription"
@@ -30,48 +38,13 @@
             android:scaleType="fitXY"
             android:adjustViewBounds="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/instructions_page2_3"
-            android:singleLine="true"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="10dp"
-            android:typeface="normal" />
-
-        <TextView
+        <Button
+            android:id="@+id/btn2"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:layout_marginBottom="15dp"
-            android:text="@string/instructions_page2_2"/>
-
-        <ImageView
-            tools:ignore="ContentDescription"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/instructions_page2_2"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/instructions_page2_4"
-            android:singleLine="true"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="10dp"
-            android:typeface="normal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="@string/instructions_page2_5"/>
+            android:text="@string/instructions_page3_button" />
 
     </LinearLayout>
 
